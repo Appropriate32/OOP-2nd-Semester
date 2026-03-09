@@ -12,19 +12,19 @@ public class Lab {
     private Date labDate;
 
     public Lab(int id, String universityName, String departmentName, String sectionName, String labName, int totalComputers, int bookedComputers, Date labDate) {
-        this.id = id;
+        setId(id);
         this.universityName = universityName;
         this.departmentName = departmentName;
         this.sectionName = sectionName;
         this.labName = labName;                          // Full constructor
-        this.totalComputers = totalComputers;
-        this.bookedComputers = bookedComputers;
+        setTotalComputers(totalComputers);
+        setBookedComputers(bookedComputers);
         this.labDate = new Date(labDate);
         counter++;
     }
 
     public Lab() { // Default constructor
-        this(00, "Default University", "Default Department", "Default Section", "Default Lab", 0, 0, new Date());
+        this(100 + counter + 1, "Default University", "Default Department", "Default Section", "Default Lab", 0, 0, new Date());
     }
 
     public Lab(int id) { // One-parameter constructor
@@ -47,8 +47,26 @@ public class Lab {
         return counter;
     }
 
+    public int availableComputers() {
+        return totalComputers - bookedComputers;
+    }
+
     public void bookComputers(int count) {
-        this.bookedComputers = count;
+        if (count > 0 && count <= availableComputers()) {
+            this.bookedComputers += count;
+            System.out.println(count + " computers booked successfully.");
+        } else {
+            System.out.println("Booking failed: Not enough computers available or invalid count.");
+        }
+    }
+
+    public void cancelBooking(int count) {
+        if (count > 0 && count <= bookedComputers) {
+            this.bookedComputers -= count;
+            System.out.println(count + " bookings cancelled successfully.");
+        } else {
+            System.out.println("Cancellation failed: Invalid count or exceeds current bookings.");
+        }
     }
 
     private String generateUniqueId() {
@@ -56,7 +74,8 @@ public class Lab {
     }
 
     public void setId(int id) {
-        this.id = id;
+        if (id >= 100)
+            this.id = id;
     }
 
     public int getId() {
@@ -96,7 +115,8 @@ public class Lab {
     }
 
     public void setTotalComputers(int totalComputers) {
-        this.totalComputers = totalComputers;
+        if (totalComputers >= bookedComputers)
+            this.totalComputers = totalComputers;
     } 
 
     public int getTotalComputers() {
@@ -104,7 +124,8 @@ public class Lab {
     }
 
     public void setBookedComputers(int bookedComputers) {
-        this.bookedComputers = bookedComputers;
+        if (bookedComputers >= 0 && bookedComputers <= totalComputers)
+            this.bookedComputers = bookedComputers;
     }
 
     public int getBookedComputers() {
@@ -117,5 +138,29 @@ public class Lab {
 
     public Date getLabDate() {
         return labDate;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+            "-----------------------------------\n" +
+            "Lab ID:           %s\n" +
+            "Lab Name:         %s\n" +
+            "University:       %s\n" +
+            "Department:       %s\n" +
+            "Section:          %s\n" +
+            "Total Computers:  %d\n" +
+            "Booked:           %d\n" +
+            "Available:        %d\n" +
+            "Date:             %s\n" +
+            "-----------------------------------",
+            generateUniqueId(), labName, universityName, departmentName, sectionName, 
+            totalComputers, bookedComputers, availableComputers(), labDate.toString()
+        );
+    }
+
+    public boolean equals(Lab other) {
+        if (other == null) return false;
+        return this.getId() == other.getId() && this.getLabName().equals(other.getLabName());
     }
 }
