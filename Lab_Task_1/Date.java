@@ -3,6 +3,10 @@ public class Date {
     private int month;
     private int year;
 
+    public Date() { // Default constructor
+        this(1, 1, 2000);
+    }
+
     public Date(int day, int month, int year) { // Three-parameter constructor
         this.day = day;
         this.month = month;
@@ -40,5 +44,13 @@ public class Date {
     @Override
     public String toString() {
         return String.format("%02d-%02d-%04d", day, month, year);
+    }
+
+    
+    public boolean equals(Date other) {
+        if ((this.day == other.day) && (this.month == other.month) && (this.year == other.year)) {
+            return true;
+        }
+        return false;
     }
 }
